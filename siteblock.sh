@@ -29,6 +29,15 @@ print_error() { echo -e "${RED}✗${NC} $1" >&2; }
 print_info() { echo -e "${BLUE}ℹ${NC} $1"; }
 print_warning() { echo -e "${YELLOW}⚠${NC} $1"; }
 
+# Cross-platform sed in-place editing
+sed_i() {
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    sed -i '' "$@"
+  else
+    sed -i "$@"
+  fi
+}
+
 # Check if running with appropriate permissions
 check_permissions() {
   if [[ $EUID -ne 0 ]] && [[ "$1" != "status" ]] && [[ "$1" != "list" ]] && [[ "$1" != "help" ]] && [[ "$1" != "version" ]]; then
@@ -94,7 +103,7 @@ unblock_sites() {
     exit 0
   fi
 
-  sed -i "/$MARKER_BEGIN/,/$MARKER_END/d" "$HOSTS_FILE"
+  sed_i "/$MARKER_BEGIN/,/$MARKER_END/d" "$HOSTS_FILE"
 
   # Flush DNS cache if available
   flush_dns
@@ -104,7 +113,7 @@ unblock_sites() {
 
 reload_sites() {
   if grep -q "$MARKER_BEGIN" "$HOSTS_FILE"; then
-    sed -i "/$MARKER_BEGIN/,/$MARKER_END/d" "$HOSTS_FILE"
+    sed_i "/$MARKER_BEGIN/,/$MARKER_END/d" "$HOSTS_FILE"
   fi
 
   load_sites
@@ -163,8 +172,8 @@ remove_site() {
   fi
 
   # Remove domain and www.domain
-  sed -i "/127.0.0.1 $domain/d" "$SITES_FILE"
-  sed -i "/127.0.0.1 www.$domain/d" "$SITES_FILE"
+  sed_i "/127.0.0.1 $domain/d" "$SITES_FILE"
+  sed_i "/127.0.0.1 www.$domain/d" "$SITES_FILE"
   
   print_success "Removed $domain and www.$domain from block list."
 

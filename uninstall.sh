@@ -12,10 +12,20 @@ YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
+# Helper functions
 print_success() { echo -e "${GREEN}✓${NC} $1"; }
 print_error() { echo -e "${RED}✗${NC} $1" >&2; }
 print_info() { echo -e "${BLUE}ℹ${NC} $1"; }
 print_warning() { echo -e "${YELLOW}⚠${NC} $1"; }
+
+# Cross-platform sed in-place editing
+sed_i() {
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    sed -i '' "$@"
+  else
+    sed -i "$@"
+  fi
+}
 
 # Check for root
 if [[ $EUID -ne 0 ]]; then
@@ -36,7 +46,7 @@ MARKER_END="# SITEBLOCK-END"
 
 if grep -q "$MARKER_BEGIN" "$HOSTS_FILE"; then
   print_info "Removing blocked sites from hosts file..."
-  sed -i "/$MARKER_BEGIN/,/$MARKER_END/d" "$HOSTS_FILE"
+  sed_i "/$MARKER_BEGIN/,/$MARKER_END/d" "$HOSTS_FILE"
   print_success "Sites unblocked"
 fi
 
