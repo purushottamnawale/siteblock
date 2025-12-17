@@ -220,9 +220,10 @@ flush_dns() {
   elif command -v resolvectl &> /dev/null; then
     resolvectl flush-caches 2>/dev/null || true
   elif command -v dscacheutil &> /dev/null; then # macOS
-    sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
+    dscacheutil -flushcache 2>/dev/null || true
+    killall -HUP mDNSResponder 2>/dev/null || true
   elif command -v nscd &> /dev/null; then
-    sudo /etc/init.d/nscd restart
+    /etc/init.d/nscd restart 2>/dev/null || true
   fi
 }
 
