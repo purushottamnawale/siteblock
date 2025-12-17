@@ -1,7 +1,39 @@
-# sites.txt - list of hosts to block
-# One entry per line in the form: <ip> <host>
-# Lines starting with # or empty lines are ignored by the script
+# ============================================
+# siteblock - Sites Configuration File
+# ============================================
+# 
+# Format: <ip> <hostname>
+# 
+# - Lines starting with # are comments
+# - Empty lines are ignored
+# - Always block both root domain and www subdomain
+#
+# After editing, run: sudo siteblock reload
+# ============================================
+
+# Social Media
 127.0.0.1 linkedin.com
 127.0.0.1 www.linkedin.com
 127.0.0.1 reddit.com
 127.0.0.1 www.reddit.com
+
+# Uncomment to block more sites:
+# 127.0.0.1 facebook.com
+# 127.0.0.1 www.facebook.com
+# 127.0.0.1 twitter.com
+# 127.0.0.1 www.twitter.com
+# 127.0.0.1 x.com
+# 127.0.0.1 www.x.com
+# 127.0.0.1 instagram.com
+# 127.0.0.1 www.instagram.com
+# 127.0.0.1 tiktok.com
+# 127.0.0.1 www.tiktok.com
+
+# News Sites
+# 127.0.0.1 news.ycombinator.com
+
+# Video/Streaming
+# 127.0.0.1 youtube.com
+# 127.0.0.1 www.youtube.com
+# 127.0.0.1 netflix.com
+# 127.0.0.1 www.netflix.com
