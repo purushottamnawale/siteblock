@@ -13,24 +13,26 @@ A simple, lightweight command-line tool to block distracting websites on Linux b
 
 ## Installation
 
-### Quick Install
+### One-Line Install (Recommended)
+
+You can install siteblock directly without cloning the repository:
+
+**Using wget:**
+```bash
+wget -O - https://raw.githubusercontent.com/purushottamnawale/siteblock/main/install.sh | sudo bash
+```
+
+**Using curl:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/purushottamnawale/siteblock/main/install.sh | sudo bash
+```
+
+### Manual Install (From Source)
 
 ```bash
 git clone https://github.com/purushottamnawale/siteblock.git
 cd siteblock
 sudo ./install.sh
-```
-
-### Manual Install
-
-```bash
-# Copy the script
-sudo cp siteblock.sh /usr/local/bin/siteblock
-sudo chmod +x /usr/local/bin/siteblock
-
-# Copy the config
-sudo mkdir -p /etc/siteblock
-sudo cp sites.txt /etc/siteblock/sites.txt
 ```
 
 ## Usage
