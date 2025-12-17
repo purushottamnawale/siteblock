@@ -1,0 +1,7 @@
+# sites.txt - list of hosts to block
+# One entry per line in the form: <ip> <host>
+# Lines starting with # or empty lines are ignored by the script
+127.0.0.1 linkedin.com
+127.0.0.1 www.linkedin.com
+127.0.0.1 reddit.com
+127.0.0.1 www.reddit.com
