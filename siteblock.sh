@@ -171,15 +171,14 @@ add_site() {
 remove_site() {
   local domain="$1"
   if [[ -z "$domain" ]]; then
-  # Remove domain and www.domain
+    print_error "Please provide a domain to remove."
+    exit 1
+  fi
+
   # Escape dots for sed regex
   local escaped_domain="${domain//./\\.}"
-  sed_i "/127\.0\.0\.1 $escaped_domain/d" "$SITES_FILE"
-  sed_i "/127\.0\.0\.1 www\.$escaped_domain/d" "$SITES_FILE"
-
-  # Remove domain and www.domain
-  sed_i "/127.0.0.1 $domain/d" "$SITES_FILE"
-  sed_i "/127.0.0.1 www.$domain/d" "$SITES_FILE"
+  sed_i "/127\.0\.0\.1 $escaped_domain$/d" "$SITES_FILE"
+  sed_i "/127\.0\.0\.1 www\.$escaped_domain$/d" "$SITES_FILE"
   
   print_success "Removed $domain and www.$domain from block list."
 
@@ -261,7 +260,7 @@ ${YELLOW}EXAMPLES:${NC}
     sudo siteblock block           # Start blocking sites
     sudo siteblock add facebook.com # Add facebook.com to block list
     sudo siteblock unblock         # Stop blocking sites
-        siteblock status               # Check if sites are blocked
+    siteblock status               # Check if sites are blocked
 
 EOF
 }
@@ -283,10 +282,10 @@ main() {
       reload_sites
       ;;
     add)
-      add_site "$2"
+      add_site "${2:-}"
       ;;
     remove)
-      remove_site "$2"
+      remove_site "${2:-}"
       ;;
     status)
       status_sites
