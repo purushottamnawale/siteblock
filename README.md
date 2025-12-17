@@ -35,6 +35,10 @@ curl -fsSL https://raw.githubusercontent.com/purushottamnawale/siteblock/main/in
 
 ```bash
 git clone https://github.com/purushottamnawale/siteblock.git
+cd siteblock
+sudo ./install.sh
+```
+
 ## Usage
 
 ### Basic Commands
@@ -83,10 +87,6 @@ While the CLI commands (`add`/`remove`) are recommended, you can also manually e
 
 ```bash
 sudo nano /etc/siteblock/sites.txt
-```t the sites file to add or remove sites to block:
-
-```bash
-sudo nano /etc/siteblock/sites.txt
 ```
 
 ### sites.txt Format
@@ -118,7 +118,7 @@ The entries are wrapped in markers (`# SITEBLOCK-BEGIN` and `# SITEBLOCK-END`) s
 ## Requirements
 
 - **OS**: Linux (Ubuntu, Debian, Fedora, Arch, etc.) or macOS.
-- **Shell**: Bash 3.2+
+- **Shell**: Bash (recommended: Bash 4+)
 - **Permissions**: Root/sudo access is required for modifying `/etc/hosts`.
 
 ## Contributing
@@ -138,7 +138,17 @@ To remove siteblock from your system:
 sudo siteblock uninstall
 ```
 
+Remove everything (including `/etc/siteblock` and `/etc/hosts.siteblock.bak`):
+```bash
+sudo siteblock uninstall --all
+```
+
 **Option 2: One-Line Script**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/purushottamnawale/siteblock/main/uninstall.sh | sudo bash
+```
+
+Non-interactive full removal:
+```bash
+curl -fsSL https://raw.githubusercontent.com/purushottamnawale/siteblock/main/uninstall.sh | sudo bash -s -- --all
 ```

@@ -87,7 +87,8 @@ cp "$SCRIPT_DIR/uninstall.sh" "$SHARE_DIR/uninstall.sh"
 # Create the wrapper script
 cat > "$INSTALL_DIR/siteblock" << 'SCRIPT'
 #!/bin/bash
-export SITEBLOCK_SITES_FILE="/etc/siteblock/sites.txt"
+: "${SITEBLOCK_SITES_FILE:=/etc/siteblock/sites.txt}"
+export SITEBLOCK_SITES_FILE
 exec /usr/local/share/siteblock/siteblock.sh "$@"
 SCRIPT
 
