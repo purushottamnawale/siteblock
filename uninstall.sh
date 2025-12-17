@@ -27,6 +27,16 @@ sed_i() {
   fi
 }
 
+# Parse arguments
+REMOVE_ALL=false
+for arg in "$@"; do
+  case "$arg" in
+    --all|-a)
+      REMOVE_ALL=true
+      ;;
+  esac
+done
+
 # Check for root
 if [[ $EUID -ne 0 ]]; then
   print_error "This uninstaller must be run as root (use sudo)"
@@ -63,27 +73,37 @@ if [[ -d /usr/local/share/siteblock ]]; then
   print_success "Removed /usr/local/share/siteblock"
 fi
 
-# Ask about config
+# Ask about config (skip if --all flag or non-interactive)
 if [[ -d /etc/siteblock ]]; then
-  echo ""
-  read -p "Remove configuration directory /etc/siteblock? [y/N] " -n 1 -r
-  echo ""
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
+  if [[ "$REMOVE_ALL" == "true" ]] || [[ ! -t 0 ]]; then
     rm -rf /etc/siteblock
     print_success "Removed /etc/siteblock"
   else
-    print_info "Kept /etc/siteblock (you can remove it manually later)"
+    echo ""
+    read -p "Remove configuration directory /etc/siteblock? [y/N] " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      rm -rf /etc/siteblock
+      print_success "Removed /etc/siteblock"
+    else
+      print_info "Kept /etc/siteblock (you can remove it manually later)"
+    fi
   fi
 fi
 
-# Remove backup if exists
+# Remove backup if exists (skip if --all flag or non-interactive)
 if [[ -f /etc/hosts.siteblock.bak ]]; then
-  echo ""
-  read -p "Remove hosts backup /etc/hosts.siteblock.bak? [y/N] " -n 1 -r
-  echo ""
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
+  if [[ "$REMOVE_ALL" == "true" ]] || [[ ! -t 0 ]]; then
     rm /etc/hosts.siteblock.bak
     print_success "Removed backup file"
+  else
+    echo ""
+    read -p "Remove hosts backup /etc/hosts.siteblock.bak? [y/N] " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      rm /etc/hosts.siteblock.bak
+      print_success "Removed backup file"
+    fi
   fi
 fi
 

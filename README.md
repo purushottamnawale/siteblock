@@ -78,18 +78,21 @@ Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for de
 
 ## Uninstall
 
-To uninstall siteblock, run:
+### One-Line Uninstall
 
+**Using wget:**
 ```bash
-sudo /usr/local/share/siteblock/uninstall.sh
+wget -O - https://raw.githubusercontent.com/purushottamnawale/siteblock/main/uninstall.sh | sudo bash
 ```
-siteblock status
 
-# List configured sites
-siteblock list
+**Using curl:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/purushottamnawale/siteblock/main/uninstall.sh | sudo bash
+```
 
-# Show help
-siteblock help
+### Or if already installed:
+```bash
+sudo siteblock uninstall
 ```
 
 ## Configuration
@@ -125,26 +128,6 @@ The entries are wrapped in markers (`# SITEBLOCK-BEGIN` and `# SITEBLOCK-END`) s
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `SITEBLOCK_SITES_FILE` | Custom path to sites.txt | `/etc/siteblock/sites.txt` |
-
-## Uninstallation
-
-### Automatic Uninstall
-
-```bash
-sudo ./uninstall.sh
-```
-
-### Manual Uninstall
-
-```bash
-# Remove blocked sites first
-sudo siteblock unblock
-
-# Remove installed files
-sudo rm /usr/local/bin/siteblock
-sudo rm -rf /usr/local/share/siteblock
-sudo rm -rf /etc/siteblock
-```
 
 ## Requirements
 
