@@ -44,10 +44,45 @@ sudo siteblock block
 # Unblock all sites
 sudo siteblock unblock
 
-# Reload block list after editing sites.txt
+# Add a site to the block list
+sudo siteblock add facebook.com
+
+# Remove a site from the block list
+sudo siteblock remove facebook.com
+
+# Reload block list after editing sites.txt manually
 sudo siteblock reload
 
 # Check current status
+siteblock status
+
+# List configured sites
+siteblock list
+
+# Show version
+siteblock version
+
+# Show help
+siteblock help
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## Uninstall
+
+To uninstall siteblock, run:
+
+```bash
+sudo /usr/local/share/siteblock/uninstall.sh
+```
 siteblock status
 
 # List configured sites

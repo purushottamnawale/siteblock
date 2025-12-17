@@ -10,6 +10,7 @@ set -euo pipefail
 HOSTS_FILE="/etc/hosts"
 MARKER_BEGIN="# SITEBLOCK-BEGIN"
 MARKER_END="# SITEBLOCK-END"
+VERSION="1.0.0"
 
 # Colors for output
 RED='\033[0;31m'
@@ -30,7 +31,7 @@ print_warning() { echo -e "${YELLOW}⚠${NC} $1"; }
 
 # Check if running with appropriate permissions
 check_permissions() {
-  if [[ $EUID -ne 0 ]] && [[ "$1" != "status" ]] && [[ "$1" != "list" ]] && [[ "$1" != "help" ]]; then
+  if [[ $EUID -ne 0 ]] && [[ "$1" != "status" ]] && [[ "$1" != "list" ]] && [[ "$1" != "help" ]] && [[ "$1" != "version" ]]; then
     print_error "This operation requires root privileges. Please run with sudo."
     exit 1
   fi
@@ -48,7 +49,7 @@ load_sites() {
 
   if [[ ${#SITES[@]} -eq 0 ]]; then
     print_warning "No sites configured in $SITES_FILE"
-    exit 1
+    # We don't exit here because we might want to unblock even if sites.txt is empty
   fi
 }
 
@@ -123,6 +124,57 @@ reload_sites() {
   print_success "Block list reloaded with ${#SITES[@]} site entries."
 }
 
+add_site() {
+  local domain="$1"
+  if [[ -z "$domain" ]]; then
+    print_error "Please provide a domain to block."
+    exit 1
+  fi
+
+  # Check if already exists
+  if grep -q "127.0.0.1 $domain" "$SITES_FILE"; then
+    print_warning "Domain $domain is already in the list."
+    return
+  fi
+
+  echo "127.0.0.1 $domain" >> "$SITES_FILE"
+  print_success "Added $domain to block list."
+
+  # Also add www. if it's not already there and the domain doesn't start with www.
+  if [[ "$domain" != www.* ]]; then
+    if ! grep -q "127.0.0.1 www.$domain" "$SITES_FILE"; then
+      echo "127.0.0.1 www.$domain" >> "$SITES_FILE"
+      print_success "Added www.$domain to block list."
+    fi
+  fi
+
+  # If currently blocked, reload
+  if grep -q "$MARKER_BEGIN" "$HOSTS_FILE"; then
+    print_info "Reloading block list..."
+    reload_sites
+  fi
+}
+
+remove_site() {
+  local domain="$1"
+  if [[ -z "$domain" ]]; then
+    print_error "Please provide a domain to remove."
+    exit 1
+  fi
+
+  # Remove domain and www.domain
+  sed -i "/127.0.0.1 $domain/d" "$SITES_FILE"
+  sed -i "/127.0.0.1 www.$domain/d" "$SITES_FILE"
+  
+  print_success "Removed $domain and www.$domain from block list."
+
+  # If currently blocked, reload
+  if grep -q "$MARKER_BEGIN" "$HOSTS_FILE"; then
+    print_info "Reloading block list..."
+    reload_sites
+  fi
+}
+
 status_sites() {
   if grep -q "$MARKER_BEGIN" "$HOSTS_FILE"; then
     print_success "Status: ${GREEN}BLOCKED${NC}"
@@ -153,7 +205,15 @@ flush_dns() {
     systemd-resolve --flush-caches 2>/dev/null || true
   elif command -v resolvectl &> /dev/null; then
     resolvectl flush-caches 2>/dev/null || true
+  elif command -v dscacheutil &> /dev/null; then # macOS
+    sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
+  elif command -v nscd &> /dev/null; then
+    sudo /etc/init.d/nscd restart
   fi
+}
+
+show_version() {
+  echo "siteblock version $VERSION"
 }
 
 show_help() {
@@ -161,15 +221,19 @@ show_help() {
 ${BLUE}siteblock${NC} - Block distracting websites using /etc/hosts
 
 ${YELLOW}USAGE:${NC}
-    siteblock <command>
+    siteblock <command> [arguments]
 
 ${YELLOW}COMMANDS:${NC}
-    block       Add sites from sites.txt to hosts file
-    unblock     Remove all blocked sites from hosts file
-    reload      Update block list with current sites.txt
-    status      Show current blocking status
-    list        Show configured sites
-    help        Show this help message
+    block           Add sites from sites.txt to hosts file
+    unblock         Remove all blocked sites from hosts file
+    add <domain>    Add a domain to the block list
+    remove <domain> Remove a domain from the block list
+    reload          Update block list with current sites.txt
+    status          Show current blocking status
+    list            Show configured sites
+    version         Show version information
+    uninstall       Uninstall siteblock
+    help            Show this help message
 
 ${YELLOW}CONFIGURATION:${NC}
     Sites file: $SITES_FILE
@@ -179,10 +243,10 @@ ${YELLOW}ENVIRONMENT:${NC}
     SITEBLOCK_SITES_FILE    Override default sites.txt location
 
 ${YELLOW}EXAMPLES:${NC}
-    sudo siteblock block      # Start blocking sites
-    sudo siteblock unblock    # Stop blocking sites
-    siteblock status          # Check if sites are blocked
-    siteblock list            # View configured sites
+    sudo siteblock block           # Start blocking sites
+    sudo siteblock add facebook.com # Add facebook.com to block list
+    sudo siteblock unblock         # Stop blocking sites
+        siteblock status               # Check if sites are blocked
 
 EOF
 }
@@ -203,11 +267,30 @@ main() {
     reload)
       reload_sites
       ;;
+    add)
+      add_site "$2"
+      ;;
+    remove)
+      remove_site "$2"
+      ;;
     status)
       status_sites
       ;;
     list)
       list_sites
+      ;;
+    version|--version|-v)
+      show_version
+      ;;
+    uninstall)
+      if [[ -f "$SCRIPT_DIR/uninstall.sh" ]]; then
+        exec "$SCRIPT_DIR/uninstall.sh"
+      elif [[ -f "/usr/local/share/siteblock/uninstall.sh" ]]; then
+        exec "/usr/local/share/siteblock/uninstall.sh"
+      else
+        print_error "Uninstall script not found."
+        exit 1
+      fi
       ;;
     help|--help|-h)
       show_help
@@ -222,3 +305,4 @@ main() {
 }
 
 main "$@"
+
