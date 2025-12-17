@@ -299,9 +299,9 @@ main() {
       ;;
     uninstall)
       if [[ -f "$SCRIPT_DIR/uninstall.sh" ]]; then
-        exec "$SCRIPT_DIR/uninstall.sh"
+        exec "$SCRIPT_DIR/uninstall.sh" "${@:2}"
       elif [[ -f "/usr/local/share/siteblock/uninstall.sh" ]]; then
-        exec "/usr/local/share/siteblock/uninstall.sh"
+        exec "/usr/local/share/siteblock/uninstall.sh" "${@:2}"
       else
         print_error "Uninstall script not found."
         exit 1
