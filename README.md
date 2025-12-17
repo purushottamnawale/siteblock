@@ -91,6 +91,14 @@ The entries are wrapped in markers (`# SITEBLOCK-BEGIN` and `# SITEBLOCK-END`) s
 
 ## Uninstallation
 
+### Automatic Uninstall
+
+```bash
+sudo ./uninstall.sh
+```
+
+### Manual Uninstall
+
 ```bash
 # Remove blocked sites first
 sudo siteblock unblock
