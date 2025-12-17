@@ -54,7 +54,11 @@ load_sites() {
     exit 1
   fi
 
-  mapfile -t SITES < <(grep -Ev '^\s*(#|$)' "$SITES_FILE")
+  # Read sites into array (compatible with older bash)
+  SITES=()
+  while IFS= read -r line; do
+    SITES+=("$line")
+  done < <(grep -Ev '^[[:space:]]*(#|$)' "$SITES_FILE")
 
   if [[ ${#SITES[@]} -eq 0 ]]; then
     print_warning "No sites configured in $SITES_FILE"
@@ -167,9 +171,11 @@ add_site() {
 remove_site() {
   local domain="$1"
   if [[ -z "$domain" ]]; then
-    print_error "Please provide a domain to remove."
-    exit 1
-  fi
+  # Remove domain and www.domain
+  # Escape dots for sed regex
+  local escaped_domain="${domain//./\\.}"
+  sed_i "/127\.0\.0\.1 $escaped_domain/d" "$SITES_FILE"
+  sed_i "/127\.0\.0\.1 www\.$escaped_domain/d" "$SITES_FILE"
 
   # Remove domain and www.domain
   sed_i "/127.0.0.1 $domain/d" "$SITES_FILE"
@@ -203,7 +209,7 @@ list_sites() {
 
   print_info "Configured sites in $SITES_FILE:"
   echo ""
-  grep -Ev '^\s*(#|$)' "$SITES_FILE" | while read -r line; do
+  grep -Ev '^[[:space:]]*(#|$)' "$SITES_FILE" | while read -r line; do
     echo "  • $line"
   done
 }
