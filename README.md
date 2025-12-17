@@ -1,15 +1,19 @@
 # 🚫 siteblock
 
-A simple, lightweight command-line tool to block distracting websites on Linux by modifying `/etc/hosts`.
+![License](https://img.shields.io/github/license/purushottamnawale/siteblock)
+![Issues](https://img.shields.io/github/issues/purushottamnawale/siteblock)
+![Pull Requests](https://img.shields.io/github/issues-pr/purushottamnawale/siteblock)
+
+A simple, lightweight, and robust command-line tool to block distracting websites on Linux and macOS by modifying `/etc/hosts`.
 
 ## Features
 
-- ✅ Block websites by redirecting them to localhost
-- ✅ Easy to configure via a simple text file
-- ✅ Colored terminal output with status indicators
-- ✅ Automatic DNS cache flushing
-- ✅ Backup of original hosts file
-- ✅ Reload functionality for updating block lists
+- 🔒 **Block Websites**: Redirects distracting sites to localhost (127.0.0.1).
+- ⚡ **Easy Configuration**: Manage sites via CLI commands or a simple text file.
+- 🎨 **Visual Feedback**: Colored terminal output with clear status indicators.
+- 🔄 **Smart DNS**: Automatic DNS cache flushing for immediate effect.
+- 🛡️ **Safe**: Automatically backs up your original hosts file.
+- 🌍 **Cross-Platform**: Works on Linux (Systemd, nscd) and macOS.
 
 ## Installation
 
@@ -31,63 +35,55 @@ curl -fsSL https://raw.githubusercontent.com/purushottamnawale/siteblock/main/in
 
 ```bash
 git clone https://github.com/purushottamnawale/siteblock.git
-cd siteblock
-sudo ./install.sh
-```
-
 ## Usage
 
+### Basic Commands
+
+| Command | Description |
+|---------|-------------|
+| `sudo siteblock block` | **Enable blocking** for all configured sites. |
+| `sudo siteblock unblock` | **Disable blocking** (restore access to all sites). |
+| `siteblock status` | Check if blocking is currently active. |
+| `siteblock list` | View the list of sites currently configured to be blocked. |
+
+### Managing Sites
+
+| Command | Description |
+|---------|-------------|
+| `sudo siteblock add <domain>` | Add a domain (and its `www` subdomain) to the block list. |
+| `sudo siteblock remove <domain>` | Remove a domain from the block list. |
+| `sudo siteblock reload` | Reload the block list from the configuration file (useful after manual edits). |
+
+### Other
+
+| Command | Description |
+|---------|-------------|
+| `siteblock version` | Show the installed version. |
+| `siteblock help` | Display the help message. |
+| `sudo siteblock uninstall` | Uninstall siteblock from your system. |
+
+### Examples
+
 ```bash
-# Block all configured sites
+# Start focusing!
 sudo siteblock block
 
-# Unblock all sites
-sudo siteblock unblock
-
-# Add a site to the block list
+# Add a new distraction
 sudo siteblock add facebook.com
 
-# Remove a site from the block list
-sudo siteblock remove facebook.com
-
-# Reload block list after editing sites.txt manually
-sudo siteblock reload
-
-# Check current status
-siteblock status
-
-# List configured sites
-siteblock list
-
-# Show version
-siteblock version
-
-# Show help
-siteblock help
-```
-
-## Uninstall
-
-### One-Line Uninstall
-
-**Using wget:**
-```bash
-wget -O - https://raw.githubusercontent.com/purushottamnawale/siteblock/main/uninstall.sh | sudo bash
-```
-
-**Using curl:**
-```bash
-curl -fsSL https://raw.githubusercontent.com/purushottamnawale/siteblock/main/uninstall.sh | sudo bash
-```
-
-### Or if already installed:
-```bash
-sudo siteblock uninstall
+# Take a break
+sudo siteblock unblock
 ```
 
 ## Configuration
 
-Edit the sites file to add or remove sites to block:
+While the CLI commands (`add`/`remove`) are recommended, you can also manually edit the configuration file.
+
+**File Location:** `/etc/siteblock/sites.txt`
+
+```bash
+sudo nano /etc/siteblock/sites.txt
+```t the sites file to add or remove sites to block:
 
 ```bash
 sudo nano /etc/siteblock/sites.txt
@@ -121,14 +117,28 @@ The entries are wrapped in markers (`# SITEBLOCK-BEGIN` and `# SITEBLOCK-END`) s
 
 ## Requirements
 
-- Linux (tested on Ubuntu, Debian, Fedora, Arch)
-- Bash 4.0+
-- Root/sudo access for blocking/unblocking
-
-## License
-
-MIT License - see [LICENSE](LICENSE) for details.
+- **OS**: Linux (Ubuntu, Debian, Fedora, Arch, etc.) or macOS.
+- **Shell**: Bash 3.2+
+- **Permissions**: Root/sudo access is required for modifying `/etc/hosts`.
 
 ## Contributing
 
-Contributions are welcome! Feel free to submit issues and pull requests.
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Uninstall
+
+To remove siteblock from your system:
+
+**Option 1: CLI (if installed)**
+```bash
+sudo siteblock uninstall
+```
+
+**Option 2: One-Line Script**
+```bash
+curl -fsSL https://raw.githubusercontent.com/purushottamnawale/siteblock/main/uninstall.sh | sudo bash
+```
