@@ -121,14 +121,6 @@ The entries are wrapped in markers (`# SITEBLOCK-BEGIN` and `# SITEBLOCK-END`) s
 - **Shell**: Bash (recommended: Bash 4+)
 - **Permissions**: Root/sudo access is required for modifying `/etc/hosts`.
 
-## Contributing
-
-Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Uninstall
 
 To remove siteblock from your system:
