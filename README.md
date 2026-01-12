@@ -83,13 +83,9 @@ sudo siteblock unblock
 
 While the CLI commands (`add`/`remove`) are recommended, you can also manually edit the configuration file.
 
-**File Location:** `/etc/siteblock/sites.txt`
-
 ```bash
 sudo nano /etc/siteblock/sites.txt
 ```
-
-### sites.txt Format
 
 ```
 # Comments start with #
@@ -101,7 +97,6 @@ sudo nano /etc/siteblock/sites.txt
 127.0.0.1 www.twitter.com
 ```
 
-### Reload the configuration
 ```bash
 sudo siteblock reload
 ```
