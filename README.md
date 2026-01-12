@@ -101,6 +101,7 @@ sudo nano /etc/siteblock/sites.txt
 127.0.0.1 www.twitter.com
 ```
 
+### Reload the configuration
 ```bash
 sudo siteblock reload
 ```
