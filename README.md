@@ -96,12 +96,13 @@ sudo nano /etc/siteblock/sites.txt
 127.0.0.1 twitter.com
 127.0.0.1 www.twitter.com
 ```
+> **Tip:** Always block both the root domain and `www.` subdomain for complete blocking.
 
 ```bash
 sudo siteblock reload
 ```
 
-> **Tip:** Always block both the root domain and `www.` subdomain for complete blocking.
+
 
 ## How It Works
 
